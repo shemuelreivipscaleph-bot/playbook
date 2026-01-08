@@ -1,0 +1,134 @@
+{
+    "nodes": [
+        {
+            "parameters": {
+                "httpMethod": "POST",
+                "path": "business-plan",
+                "responseMode": "responseNode",
+                "options": {}
+            },
+            "id": "ad567b7c-06c2-48f6-abb1-72e1e4d25007",
+            "name": "Webhook",
+            "type": "n8n-nodes-base.webhook",
+            "typeVersion": 1.1,
+            "position": [
+                -496,
+                -288
+            ],
+            "webhookId": "28a5af38-9e76-4dde-9e28-53ca7a2e77c8"
+        },
+        {
+            "parameters": {
+                "jsCode": "const body = $json.body || {};\n\nlet prompt = body.promptTemplate || '';\n\nif (body.inputs) {\n  for (const [key, value] of Object.entries(body.inputs)) {\n    prompt = prompt.replace(new RegExp(`{${key}}`, 'g'), value);\n  }\n}\n\nreturn {\n  chatInput: prompt || 'Generate a complete professional business plan.'\n};"
+            },
+            "id": "408e406f-d10f-4332-9e57-c6f1938702a8",
+            "name": "Build Prompt",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                -272,
+                -288
+            ]
+        },
+        {
+            "parameters": {
+                "options": {
+                    "systemMessage": "You are a professional business consultant.\n\nReturn the business plan in clean, well-structured Markdown using ONLY these sections:\n\n# Executive Summary\n# Business Overview\n# Market Analysis\n# Products & Services\n# Marketing Strategy\n# Operations Plan\n# Financial Overview\n# Risks & Mitigation\n# Growth Strategy\n\nRules:\n- Use clear headings\n- Use bullet points where appropriate\n- Be concise but professional\n- Do NOT include explanations about what you are doing\n"
+                }
+            },
+            "id": "a98aea00-e647-4d16-8718-58240fdcadcd",
+            "name": "AI Agent",
+            "type": "@n8n/n8n-nodes-langchain.agent",
+            "typeVersion": 1.6,
+            "position": [
+                -48,
+                -288
+            ]
+        },
+        {
+            "parameters": {
+                "options": {}
+            },
+            "id": "9eb8cae8-2562-46c0-94fc-d688f254749f",
+            "name": "Google Gemini Chat",
+            "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+            "typeVersion": 1,
+            "position": [
+                -48,
+                -80
+            ],
+            "credentials": {
+                "googlePalmApi": {
+                    "id": "3fi2UtXltvOwy25j",
+                    "name": "VIP"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "respondWith": "json",
+                "responseBody": "={\n{\n  \"success\": true,\n  \"format\": \"markdown\",\n  \"content\": {{ $node[\"AI Agent\"].json[\"output\"] }},\n  \"sections\": [\n    \"Executive Summary\",\n    \"Business Overview\",\n    \"Market Analysis\",\n    \"Products & Services\",\n    \"Marketing Strategy\",\n    \"Operations Plan\",\n    \"Financial Overview\",\n    \"Risks & Mitigation\",\n    \"Growth Strategy\"\n  ]\n}\n}",
+                "options": {}
+            },
+            "id": "54f45a28-22a9-4dce-85c0-499dde696325",
+            "name": "Respond to Webhook",
+            "type": "n8n-nodes-base.respondToWebhook",
+            "typeVersion": 1,
+            "position": [
+                272,
+                -288
+            ]
+        }
+    ],
+    "connections": {
+        "Webhook": {
+            "main": [
+                [
+                    {
+                        "node": "Build Prompt",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Build Prompt": {
+            "main": [
+                [
+                    {
+                        "node": "AI Agent",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "AI Agent": {
+            "main": [
+                [
+                    {
+                        "node": "Respond to Webhook",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Google Gemini Chat": {
+            "ai_languageModel": [
+                [
+                    {
+                        "node": "AI Agent",
+                        "type": "ai_languageModel",
+                        "index": 0
+                    }
+                ]
+            ]
+        }
+    },
+    "pinData": {},
+    "meta": {
+        "templateCredsSetupCompleted": true,
+        "instanceId": "4cc403a4c2e950b3504b7bcf03ba4a07b56850f8e3d68f3eaf4db7820d08d8d9"
+    }
+}
