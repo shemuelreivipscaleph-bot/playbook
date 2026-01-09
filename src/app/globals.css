@@ -342,7 +342,7 @@ body {
 .response-column {
   min-width: 0;
   height: calc(100vh - 12rem);
-  overflow-y: auto;
+  overflow: hidden;
 }
 
 .response-container {
@@ -367,6 +367,7 @@ body {
 }
 
 /* Custom Scrollbar for Response */
+/* Custom Scrollbar for Response - Always visible per request */
 .response-content::-webkit-scrollbar {
   width: 5px;
 }
@@ -381,6 +382,24 @@ body {
 }
 
 .response-content::-webkit-scrollbar-thumb:hover {
+  background: #d1d5db;
+}
+
+/* Custom Scrollbar for Form (Inputs) - Always visible per request */
+.form-column::-webkit-scrollbar {
+  width: 5px;
+}
+
+.form-column::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.form-column::-webkit-scrollbar-thumb {
+  background: #e5e7eb;
+  border-radius: 10px;
+}
+
+.form-column::-webkit-scrollbar-thumb:hover {
   background: #d1d5db;
 }
 
