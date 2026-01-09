@@ -19,7 +19,7 @@ export async function generateStaticParams() {
 
 export default async function PromptPage({ params }: PromptPageProps) {
   const { id } = await params;
-  
+
   let prompt = null;
   let category = null;
 
@@ -37,13 +37,13 @@ export default async function PromptPage({ params }: PromptPageProps) {
   }
 
   return (
-    <div>
+    <>
       <div className="content-header">
         <h1 className="content-title">{prompt.title}</h1>
         <p className="content-description">{prompt.description}</p>
       </div>
 
       <PromptForm prompt={prompt} />
-    </div>
+    </>
   );
 }

@@ -24,13 +24,7 @@ export default function PromptForm({ prompt }: PromptFormProps) {
     }));
   };
 
-  const generatePromptText = () => {
-    let promptText = prompt.template;
-    Object.entries(formData).forEach(([key, value]) => {
-      promptText = promptText.replace(`{${key}}`, value || `[${key}]`);
-    });
-    return promptText;
-  };
+
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -53,7 +47,6 @@ export default function PromptForm({ prompt }: PromptFormProps) {
       const result = await N8NService.sendPrompt({
         promptId: prompt.id,
         promptTitle: prompt.title,
-        promptTemplate: prompt.template,
         category: prompt.category,
         inputs: formData,
       });

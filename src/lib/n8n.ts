@@ -14,7 +14,15 @@ export class N8NService {
     const baseUrl = this.WEBHOOK_URL.endsWith('/') ? this.WEBHOOK_URL.slice(0, -1) : this.WEBHOOK_URL;
     const url = baseUrl.includes('business-plan') ? baseUrl : `${baseUrl}/business-plan`;
 
-    console.log('Sending request to n8n:', url, payload);
+    // Map promptTitle to ProjectName for the sheet lookup
+    const finalPayload = {
+      ...payload,
+      ProjectName: payload.promptTitle,
+      // We don't send promptTemplate anymore to force n8n to use the sheet
+      promptTemplate: undefined
+    };
+
+    console.log('Sending request to n8n:', url, finalPayload);
 
     try {
       const response = await fetch(url, {
@@ -23,7 +31,7 @@ export class N8NService {
           'Content-Type': 'application/json',
           'Accept': 'application/json'
         },
-        body: JSON.stringify(payload),
+        body: JSON.stringify(finalPayload),
       });
 
       const responseText = await response.text();

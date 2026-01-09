@@ -34,7 +34,8 @@ export interface PromptResponse {
 export interface N8NWebhookPayload {
   promptId: string;
   promptTitle: string;
-  promptTemplate: string;
+  promptTemplate?: string;
+  ProjectName?: string; // For Google Sheet lookup
   category: string;
   inputs: Record<string, string | string[]>;
   userId?: string;
